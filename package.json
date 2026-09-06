@@ -1,0 +1,12 @@
+{
+  "name": "direcciones-ar",
+  "version": "0.1.0",
+  "description": "Búsqueda y normalización de direcciones argentinas con precisión explícita y proveedores configurables",
+  "license": "MIT",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "files": ["src", "demo", "README.md", "LICENSE"],
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node src/server.js", "test": "node --test test/*.test.js" },
+  "repository": { "type": "git", "url": "https://github.com/franmelx/direcciones-ar.git" }
+}
