@@ -3,3 +3,7 @@ node_modules/
 *.log
 *.tgz
 coverage/
+dist/
+demo/demo.js
+demo/demo.js.map
+dist-tools/

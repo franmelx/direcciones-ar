@@ -1,16 +1,17 @@
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { createServer } = require("node:http");
-const {
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
+import {
   createGeocoder,
   normalizeInput,
   coordinates,
   rank,
   candidate,
-} = require("../src");
-const { createHandler } = require("../src/http");
-const response = (data) => new Response(JSON.stringify(data));
-const fixture = (overrides = {}) => ({
+} from "../src";
+import { createHandler } from "../src/http";
+const response = (data: unknown) => new Response(JSON.stringify(data));
+const fixture = (overrides: Record<string, unknown> = {}) => ({
   altura: { valor: 1234 },
   calle: { nombre: "AV CORRIENTES" },
   provincia: { id: "02", nombre: "Ciudad Autónoma de Buenos Aires" },
@@ -66,7 +67,7 @@ test("null, empty, zero, swapped and foreign coordinates are never map locations
   assert.deepEqual(coordinates("-54.8", "-68.3"), { lat: -54.8, lng: -68.3 });
 });
 test("v2 context never fabricates locality or postcode", async () => {
-  const urls = [];
+  const urls: string[] = [];
   const g = createGeocoder({
     usigUrl: false,
     minIntervalMs: 0,
@@ -89,6 +90,7 @@ test("v2 context never fabricates locality or postcode", async () => {
     postcode: "3000",
   });
   const directionUrl = urls.find((url) => url.includes("/direcciones"));
+  assert.ok(directionUrl);
   assert.match(directionUrl, /api\/v2.0\/direcciones/);
   assert.equal(new URL(directionUrl).searchParams.get("localidad"), "Santa Fe");
   assert.equal(r.candidates[0].address.city, "Rosario");
@@ -235,9 +237,9 @@ test("HTTP validation, rate limiting, no-store and no arbitrary CORS", async (t)
     }),
   });
   const server = createServer(handler);
-  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
   t.after(() => new Promise((r) => server.close(r)));
-  const base = `http://127.0.0.1:${server.address().port}`;
+  const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   assert.equal(
     (
       await fetch(base + "/search", {
@@ -261,11 +263,11 @@ test("upstream timeout yields recoverable unavailable", async (t) => {
   const server = createServer((_req, res) =>
     setTimeout(() => res.end("{}"), 200),
   );
-  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
   t.after(() => new Promise((r) => server.close(r)));
   const g = createGeocoder({
     usigUrl: false,
-    georefUrl: `http://127.0.0.1:${server.address().port}`,
+    georefUrl: `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
     timeoutMs: 30,
     minIntervalMs: 0,
   });
@@ -431,14 +433,14 @@ test("another street is not an address resolution, including predictions with a 
         direcciones: [fixture({ calle: { nombre: "JUAN B JUSTO" } })],
       }),
   });
-  for (const method of ["search", "suggest"]) {
+  for (const method of ["search", "suggest"] as const) {
     const r = await g[method]({ query: "San Juan 1234", city: "CABA" });
     assert.equal(r.status, "not_found");
     assert.equal(r.candidates.length, 0);
   }
 });
 test("Geoapify uses real autocomplete/search/reverse endpoints, Argentina filter and private operator key", async () => {
-  const urls = [];
+  const urls: URL[] = [];
   const g = createGeocoder({
     georefUrl: false,
     usigUrl: false,
@@ -491,7 +493,7 @@ test("Geoapify uses real autocomplete/search/reverse endpoints, Argentina filter
   assert.equal(
     createGeocoder()
       .providers()
-      .providers.find((p) => p.name === "geoapify").enabled,
+      .providers.find((p) => p.name === "geoapify")?.enabled,
     false,
   );
 });
@@ -520,9 +522,9 @@ test("versioned API, interactive docs, OpenAPI, catalogs and CORS are usable", a
   const server = createServer(
     createHandler({ geocoder: g, allowedOrigins: ["https://app.test"] }),
   );
-  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
   t.after(() => new Promise((r) => server.close(r)));
-  const base = `http://127.0.0.1:${server.address().port}`;
+  const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   const spec = await (await fetch(base + "/openapi.json")).json();
   assert.equal(spec.openapi, "3.1.0");
   assert.ok(spec.paths["/v1/suggest"].post);
@@ -555,7 +557,7 @@ test("versioned API, interactive docs, OpenAPI, catalogs and CORS are usable", a
 });
 
 test("public Photon only backs up unresolved complete addresses, never partial typing", async () => {
-  const calls = [];
+  const calls: URL[] = [];
   const g = createGeocoder({
     georefUrl: false,
     usigUrl: false,
@@ -652,4 +654,15 @@ test("public Photon budget stops upstream requests while leaving a recoverable r
   assert.equal(calls, 200);
   assert.equal(result.status, "unavailable");
   assert.ok(result.warnings.includes("select_on_map"));
+});
+
+
+test("package version and generated entry points match the implementation", async () => {
+  const { readFileSync } = await import("node:fs");
+  const pkg = JSON.parse(readFileSync("package.json", "utf8")) as { version: string; main: string; types: string };
+  const { version } = await import("../src/version");
+  assert.equal(pkg.version, version);
+  assert.equal(pkg.main, "dist/index.js");
+  assert.equal(pkg.types, "dist/index.d.ts");
+  assert.match(readFileSync(pkg.types, "utf8"), /createGeocoder/);
 });

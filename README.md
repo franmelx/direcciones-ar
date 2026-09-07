@@ -4,11 +4,12 @@ Buscador de direcciones argentinas, biblioteca Node.js y API HTTP con demo de ma
 
 ## Ejecutar
 
-Requiere Node.js 20 o posterior.
+Requiere Node.js 20 o posterior. Implementación, demo y pruebas escritas en TypeScript con `strict: true`; el despliegue ejecuta el JavaScript compilado.
 
 ```sh
 git clone https://github.com/franmelx/direcciones-ar.git
 cd direcciones-ar
+npm ci
 npm test
 npm start
 ```
@@ -47,8 +48,8 @@ La respuesta incluye `predictions` con `kind` (`street`, `locality`, `address`),
 
 La demo ya consulta automáticamente después de 450 ms sin escribir, cancela búsquedas anteriores, admite teclado y conserva un botón de búsqueda explícita. Para integrar otro cliente: mínimo 3 caracteres, debounce de 400–600 ms, AbortController, ignorar respuestas antiguas, limpiar la selección cuando cambia el texto y confirmar el punto antes de guardar. No consultar en cada pulsación.
 
-```js
-const { createGeocoder } = require("direcciones-ar");
+```ts
+import { createGeocoder } from "direcciones-ar";
 const geocoder = createGeocoder();
 const suggestions = await geocoder.suggest({ query: "Corrien", city: "CABA" });
 const provinces = await geocoder.provinces();
@@ -83,10 +84,10 @@ Un cliente debe cancelar búsquedas antiguas, invalidar el punto cuando cambia e
 
 ## Biblioteca
 
-También se puede instalar desde un checkout local (`npm install /ruta/direcciones-ar`) o desde un commit de GitHub. El nombre del paquete no implica publicación en npm.
+También se puede instalar desde un checkout local compilado (`npm install /ruta/direcciones-ar`) o desde el archivo `.tgz` generado con `npm pack`. El nombre del paquete no implica publicación en npm.
 
-```js
-const { createGeocoder } = require("direcciones-ar");
+```ts
+import { createGeocoder } from "direcciones-ar";
 const geocoder = createGeocoder();
 const result = await geocoder.search({
   query: "Av. Corrientes",
@@ -95,7 +96,7 @@ const result = await geocoder.search({
 });
 ```
 
-Exporta tipos TypeScript. Se puede inyectar `fetch` para pruebas o adaptadores. Endpoints configurables únicamente por el operador, nunca por parámetros del cliente.
+Genera las declaraciones TypeScript desde la implementación durante `npm run build`. Los puntos de entrada son `direcciones-ar` y `direcciones-ar/dist/http`. Para integrar un checkout local, compilalo primero; para distribuirlo, `npm pack` compila y empaqueta los artefactos. `npm test` compila y ejecuta las pruebas; `npm run typecheck` comprueba todos los fuentes, la demo y los scripts. Se puede inyectar `fetch` para pruebas o adaptadores. Endpoints configurables únicamente por el operador, nunca por parámetros del cliente.
 
 ## Fuentes y límites
 

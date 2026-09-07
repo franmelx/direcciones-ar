@@ -1,10 +1,22 @@
-"use strict";
-const form = document.querySelector("#search");
-const status = document.querySelector("#status");
-const results = document.querySelector("#results");
-const confirmation = document.querySelector("#confirm");
-const output = document.querySelector("#output");
-const selection = document.querySelector("#selection");
+import type * as Leaflet from "leaflet";
+import type { Candidate, Prediction, Result, Suggestions } from "../dist/types";
+declare const L: typeof Leaflet;
+declare global {
+  interface Window {
+    L?: typeof Leaflet;
+  }
+}
+function element<T extends Element>(selector: string): T {
+  const value = document.querySelector<T>(selector);
+  if (!value) throw new Error("Missing demo element: " + selector);
+  return value;
+}
+const form = element<HTMLFormElement>("#search");
+const status = element<HTMLElement>("#status");
+const results = element<HTMLUListElement>("#results");
+const confirmation = element<HTMLButtonElement>("#confirm");
+const output = element<HTMLElement>("#output");
+const selection = element<HTMLElement>("#selection");
 const precision = {
   address: "Dirección de la fuente",
   interpolated: "Altura aproximada",
@@ -13,12 +25,14 @@ const precision = {
   locality: "Centro de localidad",
   region: "Zona aproximada",
 };
-let map,
-  marker,
-  selected,
-  controller,
-  debounce,
-  version = 0;
+let map: Leaflet.Map | undefined;
+let marker: Leaflet.Marker | null = null;
+let selected: { lat: number; lng: number; label: string } | null = null;
+let controller: AbortController | undefined;
+let debounce: ReturnType<typeof setTimeout> | undefined;
+let version = 0;
+const field = (name: string) =>
+  form.elements.namedItem(name) as HTMLInputElement;
 function cancelSearch() {
   version++;
   controller?.abort();
@@ -37,7 +51,7 @@ if (window.L) {
 } else
   status.textContent =
     "No se pudo cargar el mapa. Podés buscar y ver las coordenadas; recargá para volver a intentarlo.";
-function choose(lat, lng, label) {
+function choose(lat: number, lng: number, label: string) {
   cancelSearch();
   if (
     !Number.isFinite(lat) ||
@@ -62,7 +76,7 @@ function choose(lat, lng, label) {
     if (!marker) {
       marker = L.marker([lat, lng], { draggable: true }).addTo(map);
       marker.on("dragend", () => {
-        const p = marker.getLatLng();
+        const p = marker!.getLatLng();
         choose(p.lat, p.lng, "Punto corregido en el mapa");
       });
     } else marker.setLatLng([lat, lng]);
@@ -82,14 +96,14 @@ form.addEventListener("input", () => {
     marker.remove();
     marker = null;
   }
-  if (form.elements.query.value.trim().length >= 3)
+  if (field("query").value.trim().length >= 3)
     debounce = setTimeout(() => request("suggest"), 450);
 });
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   request("search");
 });
-async function request(operation) {
+async function request(operation: "search" | "suggest") {
   cancelSearch();
   const current = new AbortController();
   controller = current;
@@ -104,7 +118,7 @@ async function request(operation) {
       body: JSON.stringify(Object.fromEntries(new FormData(form))),
       signal: current.signal,
     });
-    const data = await response.json();
+    const data = (await response.json()) as Result & Partial<Suggestions>;
     if (requestVersion !== version) return;
     if (!response.ok) throw new Error("unavailable");
     const items = data.predictions || data.candidates;
@@ -119,21 +133,21 @@ async function request(operation) {
       detail.textContent = `${item.provider} · ${precision[item.precision] || "Ubicación orientativa"} · ${item.warnings?.length ? "revisá las diferencias con tu búsqueda" : "requiere confirmación"}`;
       button.append(detail);
       button.onclick = () => {
-        if (item.requiresResolution) {
+        if ("requiresResolution" in item && item.requiresResolution) {
           cancelSearch();
           results.replaceChildren();
           selected = null;
           confirmation.disabled = true;
-          form.elements.query.value = (item.address.street || "") + " ";
-          form.elements.city.value =
-            item.address.city || form.elements.city.value;
-          form.elements.province.value =
-            item.address.province || form.elements.province.value;
+          field("query").value = (item.address.street || "") + " ";
+          field("city").value = item.address.city || field("city").value;
+          field("province").value =
+            item.address.province || field("province").value;
           status.textContent =
             "Predicción seleccionada. Completá calle y altura para ubicar el punto.";
-          form.elements.query.focus();
+          field("query").focus();
           return;
         }
+        if (item.lat === null || item.lng === null) return;
         choose(item.lat, item.lng, item.label);
         map?.setView(
           [item.lat, item.lng],
@@ -162,7 +176,7 @@ confirmation.onclick = () => {
   }
 };
 
-form.elements.query.addEventListener("keydown", (e) => {
+field("query").addEventListener("keydown", (e) => {
   if (e.key === "ArrowDown") {
     const first = results.querySelector("button");
     if (first) {
@@ -177,7 +191,7 @@ form.elements.query.addEventListener("keydown", (e) => {
 });
 results.addEventListener("keydown", (e) => {
   const buttons = [...results.querySelectorAll("button")];
-  const index = buttons.indexOf(document.activeElement);
+  const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
   if (e.key === "ArrowDown" || e.key === "ArrowUp") {
     e.preventDefault();
     buttons[
@@ -190,6 +204,6 @@ results.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     cancelSearch();
     results.replaceChildren();
-    form.elements.query.focus();
+    field("query").focus();
   }
 });

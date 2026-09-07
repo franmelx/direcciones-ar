@@ -49,7 +49,7 @@ export interface Options {
   cacheSize?: number;
   cacheTtlMs?: number;
   userAgent?: string;
-  fetch?: typeof fetch;
+  fetch?: (url: URL, init?: RequestInit) => Promise<Response>;
 }
 export interface Prediction extends Omit<Candidate, "lat" | "lng"> {
   lat: number | null;
@@ -75,29 +75,44 @@ export interface CatalogResult {
     precision: string;
     attribution: Candidate["attribution"];
   }[];
+  warnings?: string[];
   total?: number;
   limit?: number;
 }
-export function createGeocoder(options?: Options): {
+
+export type Provider = "georef" | "usig" | "geoapify" | "photon";
+export interface Point {
+  lat: number;
+  lng: number;
+}
+export type NormalizedInput = Required<SearchInput> & { street: string };
+export type CandidateBase = Omit<
+  Candidate,
+  "score" | "confidence" | "warnings"
+> & { provider: Provider };
+export type PredictionBase = Omit<
+  Prediction,
+  "score" | "confidence" | "warnings"
+> & { provider: Provider };
+export type Unranked = CandidateBase | PredictionBase;
+export type Ranked = Unranked &
+  Pick<Candidate, "score" | "confidence" | "warnings">;
+export type CandidateValues = Partial<
+  Record<keyof Candidate["address"] | "lat" | "lng" | "label", unknown>
+> & { precision?: Candidate["precision"] };
+export interface Geocoder {
   search(input: SearchInput): Promise<Result>;
   suggest(input: SearchInput): Promise<Suggestions>;
+  reverse(input: Point): Promise<Result>;
   provinces(input?: CatalogInput): Promise<CatalogResult>;
   localities(input?: CatalogInput): Promise<CatalogResult>;
   providers(): {
     providers: {
-      name: string;
+      name: Provider;
       enabled: boolean;
       coverage: string;
       attribution: Candidate["attribution"];
     }[];
   };
-  reverse(input: { lat: number; lng: number }): Promise<Result>;
   clearCache(): void;
-};
-export function coordinates(
-  lat: unknown,
-  lng: unknown,
-): { lat: number; lng: number } | null;
-export function normalizeInput(
-  input: SearchInput,
-): SearchInput & { street: string };
+}

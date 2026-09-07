@@ -1,7 +1,16 @@
-"use strict";
+interface InventoryStreet {
+  id: string;
+  nombre: string;
+  altura: { inicio: { izquierda: number }; fin: { izquierda: number } };
+  localidad?: { nombre: string };
+  localidad_censal?: { nombre: string };
+}
+interface Inventory {
+  calles?: InventoryStreet[];
+}
 // Opt-in live test. Official street inventory + random height within its range.
 // No customers or actual delivery records. A height can lack a real building.
-const { createGeocoder } = require("../src");
+import { createGeocoder } from "../src";
 const seed = Number(process.env.AMBA_SEED || 20260906);
 let state = seed >>> 0;
 const random = () => {
@@ -52,17 +61,17 @@ const geocoder = createGeocoder({
       orden: "nombre",
       ...(city === "CABA" ? {} : { localidad: localityId }),
     });
-    let streets;
+    let streets: InventoryStreet[];
     try {
       const response = await fetch(
         "https://apis.datos.gob.ar/georef/api/v2.0/calles?" + params,
         {
           signal: AbortSignal.timeout(10000),
-          headers: { "User-Agent": "direcciones-ar/0.2 public coverage test" },
+          headers: { "User-Agent": "direcciones-ar/0.3 public coverage test" },
         },
       );
       if (!response.ok) throw new Error();
-      let data = await response.json();
+      let data = (await response.json()) as Inventory;
       if (!data.calles?.length) {
         const census = matching.find((item) => String(item.id).length === 8);
         if (census) {
@@ -73,7 +82,7 @@ const geocoder = createGeocoder({
             "https://apis.datos.gob.ar/georef/api/v2.0/calles?" + params,
             { signal: AbortSignal.timeout(10000) },
           );
-          data = await fallback.json();
+          data = (await fallback.json()) as Inventory;
         }
       }
       streets =
@@ -133,7 +142,7 @@ const geocoder = createGeocoder({
     );
     await new Promise((resolve) => setTimeout(resolve, 650));
   }
-  const evaluated = cases.filter((c) => c.input);
+  const evaluated = cases.filter((c) => "input" in c);
   const report = {
     date: new Date().toISOString(),
     seed,

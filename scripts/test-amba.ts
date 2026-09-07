@@ -1,12 +1,11 @@
-"use strict";
-const { createGeocoder } = require("../src");
+import { createGeocoder } from "../src";
 // Small opt-in evaluation permitted by Photon's reasonable-use demo policy.
 const g = createGeocoder({
   photonUrl: process.env.PHOTON_URL,
   geoapifyKey: process.env.GEOAPIFY_API_KEY,
   minIntervalMs: 1200,
 });
-const streets = [
+const streets: [string, string, number, number][] = [
   ["San Justo", "Balbastro", 3000, 5500],
   ["Morón", "Almirante Brown", 100, 1200],
   ["Ramos Mejía", "Avenida de Mayo", 100, 1000],

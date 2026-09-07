@@ -1,28 +1,36 @@
 {
   "name": "direcciones-ar",
-  "version": "0.2.0",
-  "description": "Búsqueda y normalización de direcciones argentinas con precisión explícita y proveedores configurables",
+  "version": "0.3.0",
+  "description": "B\u00fasqueda y normalizaci\u00f3n de direcciones argentinas con precisi\u00f3n expl\u00edcita y proveedores configurables",
   "license": "MIT",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
+    "dist",
     "src",
     "demo",
     "README.md",
-    "LICENSE",
-    "scripts"
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "start": "node src/server.js",
-    "test": "node --test test/*.test.js",
-    "test:amba": "node scripts/test-amba.js",
-    "test:amba:inventory": "node scripts/test-amba-inventory.js"
+    "start": "node dist/server.js",
+    "test": "npm run build && tsc -p tsconfig.tools.json && node --test dist-tools/test/*.test.js",
+    "test:amba": "tsc -p tsconfig.tools.json && node dist-tools/scripts/test-amba.js",
+    "test:amba:inventory": "tsc -p tsconfig.tools.json && node dist-tools/scripts/test-amba-inventory.js",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.demo.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.demo.json --noEmit && tsc -p tsconfig.tools.json --noEmit",
+    "prepack": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/franmelx/direcciones-ar.git"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "@types/node": "^22.0.0",
+    "@types/leaflet": "^1.9.0"
   }
 }

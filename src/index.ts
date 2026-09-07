@@ -1,6 +1,46 @@
-"use strict";
-const { createHash } = require("node:crypto");
-const ATTRIBUTIONS = {
+import { createHash } from "node:crypto";
+import type {
+  GeorefResponse,
+  UsigResponse,
+  PhotonResponse,
+  GeoapifyResponse,
+} from "./providers";
+import type {
+  Options,
+  Point,
+  NormalizedInput,
+  Candidate,
+  CandidateBase,
+  PredictionBase,
+  CandidateValues,
+  Provider,
+  Unranked,
+  Ranked,
+  Result,
+  Suggestions,
+  CatalogResult,
+  Geocoder,
+} from "./types";
+export type * from "./types";
+const present = <T>(value: T | null | undefined | false): value is T =>
+  value !== null && value !== undefined && value !== false;
+const record = (raw: unknown): Record<string, unknown> => {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw))
+    throw new GeocodingError("invalid_input");
+  return raw as Record<string, unknown>;
+};
+const emptyInput: NormalizedInput = {
+  query: "",
+  street: "",
+  number: "",
+  city: "",
+  province: "",
+  postcode: "",
+};
+type Operation = "search" | "suggest" | "reverse";
+type ExecutionInput = NormalizedInput & Partial<Point>;
+
+export const ATTRIBUTIONS = {
   georef: {
     name: "Georef · Datos Argentina",
     url: "https://www.argentina.gob.ar/georef",
@@ -18,33 +58,36 @@ const ATTRIBUTIONS = {
     url: "https://www.openstreetmap.org/copyright",
   },
 };
-class GeocodingError extends Error {
-  constructor(code, status = 400) {
+export class GeocodingError extends Error {
+  constructor(
+    public readonly code: string,
+    public readonly status = 400,
+  ) {
     super(code);
     this.code = code;
     this.status = status;
   }
 }
-const text = (v) =>
+const text = (v: unknown) =>
   typeof v === "string" || typeof v === "number"
     ? String(v).trim().replace(/\s+/g, " ")
     : "";
-const fold = (v) =>
+const fold = (v: unknown) =>
   text(v)
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
-const comparable = (v) =>
+const comparable = (v: unknown) =>
   fold(v)
     .replace(/\b(av|avenida|calle)\.?\b/g, " ")
     .replace(/[^a-z0-9]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const isCaba = (v) =>
+const isCaba = (v: unknown) =>
   /^(caba|capital federal|ciudad autonoma de buenos aires|ciudad de buenos aires|02)$/.test(
     fold(v),
   );
-function provinceName(v) {
+function provinceName(v: unknown) {
   if (
     fold(v).startsWith("tierra del fuego") ||
     fold(v) === "tdf" ||
@@ -57,7 +100,7 @@ function provinceName(v) {
       ? "Buenos Aires"
       : text(v);
 }
-function coordinates(lat, lng) {
+export function coordinates(lat: unknown, lng: unknown): Point | null {
   if (
     ![lat, lng].every(
       (v) =>
@@ -76,7 +119,8 @@ function coordinates(lat, lng) {
     ? point
     : null;
 }
-function normalizeInput(raw) {
+export function normalizeInput(value: unknown): NormalizedInput {
+  const raw = record(value);
   if (!raw || typeof raw !== "object" || Array.isArray(raw))
     throw new GeocodingError("invalid_input");
   const query = text(raw.query || raw.street);
@@ -129,15 +173,18 @@ function normalizeInput(raw) {
     query: [street, number].filter(Boolean).join(" "),
   };
 }
-function candidate(provider, values) {
+export function candidate(
+  provider: Provider,
+  values: CandidateValues,
+): CandidateBase | null {
   const point = coordinates(values.lat, values.lng);
   if (!point) return null;
   const address = Object.fromEntries(
-    ["street", "number", "city", "province", "postcode"].map((k) => [
+    (["street", "number", "city", "province", "postcode"] as const).map((k) => [
       k,
       text(values[k]),
     ]),
-  );
+  ) as Candidate["address"];
   address.province = provinceName(address.province);
   const label =
     text(values.label) ||
@@ -168,16 +215,21 @@ function candidate(provider, values) {
     attribution: ATTRIBUTIONS[provider],
   };
 }
-function prediction(provider, values) {
+function prediction(
+  provider: Provider,
+  values: CandidateValues,
+): PredictionBase | null {
   const located = candidate(provider, values);
   const address =
     located?.address ||
-    Object.fromEntries(
-      ["street", "number", "city", "province", "postcode"].map((k) => [
-        k,
-        k === "province" ? provinceName(values[k]) : text(values[k]),
-      ]),
-    );
+    (Object.fromEntries(
+      (["street", "number", "city", "province", "postcode"] as const).map(
+        (k) => [
+          k,
+          k === "province" ? provinceName(values[k]) : text(values[k]),
+        ],
+      ),
+    ) as Candidate["address"]);
   const label =
     located?.label ||
     text(values.label) ||
@@ -219,11 +271,14 @@ function prediction(provider, values) {
     },
   };
 }
-function rank(results, input) {
+export function rank(
+  results: (Unranked | null)[],
+  input: NormalizedInput,
+): Ranked[] {
   const ranked = results
-    .filter(Boolean)
+    .filter(present)
     .map((result) => {
-      const warnings = [];
+      const warnings: string[] = [];
       const a = result.address;
       let score =
         result.precision === "address"
@@ -244,7 +299,7 @@ function rank(results, input) {
         score += 10;
         warnings.push("street_partial_match");
       } else if (a.street) warnings.push("street_mismatch");
-      for (const key of ["city", "province"]) {
+      for (const key of ["city", "province"] as const) {
         if (!input[key]) continue;
         const expected = comparable(provinceName(input[key]));
         const actual = comparable(provinceName(a[key]));
@@ -255,7 +310,11 @@ function rank(results, input) {
       return {
         ...result,
         score,
-        confidence: warnings.length ? "low" : score >= 75 ? "medium" : "low",
+        confidence: (warnings.length
+          ? "low"
+          : score >= 75
+            ? "medium"
+            : "low") as Candidate["confidence"],
         warnings,
       };
     })
@@ -263,7 +322,7 @@ function rank(results, input) {
       (r) => !r.warnings.includes("province_mismatch") || !r.address.province,
     )
     .sort((a, b) => b.score - a.score);
-  const unique = [];
+  const unique: Ranked[] = [];
   for (const r of ranked) {
     if (
       unique.some(
@@ -272,7 +331,11 @@ function rank(results, input) {
           u.address.number === r.address.number &&
           comparable(u.address.city) === comparable(r.address.city) &&
           comparable(u.address.province) === comparable(r.address.province) &&
+          u.lat !== null &&
+          r.lat !== null &&
           Math.abs(u.lat - r.lat) < 0.0002 &&
+          u.lng !== null &&
+          r.lng !== null &&
           Math.abs(u.lng - r.lng) < 0.0002,
       )
     )
@@ -281,14 +344,22 @@ function rank(results, input) {
   }
   return unique.slice(0, 8);
 }
-function createGeocoder(options = {}) {
+export function createGeocoder(options: Options = {}): Geocoder {
   const fetcher = options.fetch || globalThis.fetch;
   const timeoutMs = options.timeoutMs ?? 6000;
   const minIntervalMs = options.minIntervalMs ?? 600;
-  const cache = new Map();
-  const pending = new Map();
-  const gates = new Map();
-  const evict = (key) => {
+  const cache = new Map<
+    string,
+    {
+      value: Result | CatalogResult;
+      expires: number;
+      timer: ReturnType<typeof setTimeout>;
+    }
+  >();
+  const pending = new Map<string, Promise<Result | CatalogResult>>();
+  const gates = new Map<string, { next: number; waiting: number }>();
+  const evict = (key: string | undefined) => {
+    if (key === undefined) return;
     clearTimeout(cache.get(key)?.timer);
     cache.delete(key);
   };
@@ -309,7 +380,7 @@ function createGeocoder(options = {}) {
     options.photonFallbackOnly ?? Boolean(publicPhoton);
   let photonDay = -1,
     photonCalls = 0;
-  for (const endpoint of [georefUrl, usigUrl, photonUrl].filter(Boolean)) {
+  for (const endpoint of [georefUrl, usigUrl, photonUrl].filter(present)) {
     const url = new URL(endpoint);
     if (
       !["https:", "http:"].includes(url.protocol) ||
@@ -319,7 +390,13 @@ function createGeocoder(options = {}) {
     )
       throw new GeocodingError("invalid_provider");
   }
-  async function json(provider, base, path, params) {
+  async function json<T>(
+    provider: Provider,
+    base: string | null,
+    path: string,
+    params: Record<string, string | number | null | undefined>,
+  ): Promise<T> {
+    if (!base) throw new GeocodingError("provider_unavailable", 503);
     const deadline = Date.now() + timeoutMs;
     const gate = gates.get(provider) || { next: 0, waiting: 0 };
     if (gate.waiting >= 12) throw new GeocodingError("provider_busy", 503);
@@ -332,7 +409,8 @@ function createGeocoder(options = {}) {
       if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
       const url = new URL(`${base.replace(/\/$/, "")}${path}`);
       for (const [key, value] of Object.entries(params))
-        if (value !== "") url.searchParams.set(key, String(value));
+        if (value !== "" && value != null)
+          url.searchParams.set(key, String(value));
       if (provider === "photon" && publicPhoton) {
         const day = Math.floor(Date.now() / 86400000);
         if (day !== photonDay) {
@@ -348,7 +426,7 @@ function createGeocoder(options = {}) {
           Accept: "application/json",
           "User-Agent":
             options.userAgent ||
-            "direcciones-ar/0.2 (https://github.com/franmelx/direcciones-ar)",
+            "direcciones-ar/0.3 (https://github.com/franmelx/direcciones-ar)",
         },
         signal: AbortSignal.timeout(Math.max(1, deadline - Date.now())),
         redirect: "error",
@@ -357,6 +435,7 @@ function createGeocoder(options = {}) {
       // Limit upstream data as well as input. Addresses are not logged.
       if (Number(response.headers.get("content-length") || 0) > 1048576)
         throw new GeocodingError("provider_response_too_large", 503);
+      if (!response.body) throw new GeocodingError("provider_invalid", 503);
       const reader = response.body.getReader();
       const chunks = [];
       let size = 0;
@@ -372,19 +451,19 @@ function createGeocoder(options = {}) {
       } finally {
         await reader.cancel().catch(() => {});
       }
-      return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+      return JSON.parse(Buffer.concat(chunks).toString("utf8")) as T;
     } finally {
       gate.waiting--;
     }
   }
-  async function localityContext(input) {
+  async function localityContext(input: NormalizedInput) {
     if (!input.city || isCaba(input.city)) return { locality: "", census: "" };
     // Some names identify both a census locality (8-digit ID) and an entity
     // (10-digit ID). Streets reference the entity; a name alone can resolve wrong.
-    const data = await cached("localities", {
-      query: input.city,
-      province: input.province,
-    });
+    const context = { query: input.city, province: input.province };
+    const data = await cached("localities", context, () =>
+      catalog("localities", context),
+    );
     const matches = data.items.filter(
       (item) => fold(item.name) === fold(input.city),
     );
@@ -400,10 +479,10 @@ function createGeocoder(options = {}) {
       census: matches.find((item) => String(item.id).length === 8)?.id || "",
     };
   }
-  async function georef(input) {
+  async function georef(input: NormalizedInput) {
     const province = isCaba(input.province) ? "02" : input.province;
     const context = await localityContext(input);
-    let data = await json("georef", georefUrl, "/direcciones", {
+    let data = await json<GeorefResponse>("georef", georefUrl, "/direcciones", {
       direccion: input.query,
       provincia: province,
       localidad: context.locality,
@@ -416,7 +495,7 @@ function createGeocoder(options = {}) {
         coordinates(d.ubicacion?.lat, d.ubicacion?.lon),
       )
     ) {
-      data = await json("georef", georefUrl, "/direcciones", {
+      data = await json<GeorefResponse>("georef", georefUrl, "/direcciones", {
         direccion: input.query,
         provincia: province,
         localidad_censal: context.census,
@@ -445,10 +524,10 @@ function createGeocoder(options = {}) {
       }),
     );
   }
-  async function usig(input, suggestions = false) {
+  async function usig(input: NormalizedInput, suggestions = false) {
     const locality =
       isCaba(input.city) || isCaba(input.province) ? "CABA" : input.city;
-    const data = await json("usig", usigUrl, "/", {
+    const data = await json<UsigResponse>("usig", usigUrl, "/", {
       direccion: [input.query, locality].filter(Boolean).join(", "),
       geocodificar: "TRUE",
       srid: 4326,
@@ -473,7 +552,7 @@ function createGeocoder(options = {}) {
       });
     });
   }
-  function photonCandidates(data) {
+  function photonCandidates(data: PhotonResponse) {
     if (!Array.isArray(data.features))
       throw new GeocodingError("provider_invalid", 503);
     return data.features
@@ -497,17 +576,17 @@ function createGeocoder(options = {}) {
         });
       });
   }
-  async function georefStreets(input) {
+  async function georefStreets(input: NormalizedInput) {
     const context = await localityContext(input);
     const province = isCaba(input.province) ? "02" : input.province;
-    let data = await json("georef", georefUrl, "/calles", {
+    let data = await json<GeorefResponse>("georef", georefUrl, "/calles", {
       nombre: input.street,
       provincia: province,
       localidad: context.locality,
       max: 12,
     });
     if (context.census && Array.isArray(data.calles) && !data.calles.length) {
-      data = await json("georef", georefUrl, "/calles", {
+      data = await json<GeorefResponse>("georef", georefUrl, "/calles", {
         nombre: input.street,
         provincia: province,
         localidad_censal: context.census,
@@ -528,7 +607,7 @@ function createGeocoder(options = {}) {
       }),
     );
   }
-  async function geoapify(kind, input) {
+  async function geoapify(kind: Operation, input: ExecutionInput) {
     const reverse = kind === "reverse";
     const params = {
       apiKey: geoapifyKey,
@@ -544,7 +623,7 @@ function createGeocoder(options = {}) {
             filter: "countrycode:ar",
           }),
     };
-    const data = await json(
+    const data = await json<GeoapifyResponse>(
       "geoapify",
       "https://api.geoapify.com/v1/geocode",
       kind === "suggest" ? "/autocomplete" : reverse ? "/reverse" : "/search",
@@ -575,11 +654,14 @@ function createGeocoder(options = {}) {
         }),
       );
   }
-  async function catalog(kind, input) {
+  async function catalog(
+    kind: "provinces" | "localities",
+    input: { query: string; province: string },
+  ): Promise<CatalogResult> {
     if (!georefUrl) return { status: "unavailable", items: [] };
     const key = kind === "provinces" ? "provincias" : "localidades";
     try {
-      const data = await json("georef", georefUrl, "/" + key, {
+      const data = await json<GeorefResponse>("georef", georefUrl, "/" + key, {
         nombre: input.query,
         ...(kind === "localities"
           ? { provincia: isCaba(input.province) ? "02" : input.province }
@@ -597,7 +679,7 @@ function createGeocoder(options = {}) {
           ...(d.provincia
             ? {
                 province: {
-                  id: d.provincia.id,
+                  id: text(d.provincia.id),
                   name: provinceName(d.provincia.nombre),
                 },
               }
@@ -617,10 +699,11 @@ function createGeocoder(options = {}) {
       };
     }
   }
-  async function execute(kind, input) {
-    if (kind === "provinces" || kind === "localities")
-      return catalog(kind, input);
-    const tasks = [];
+  async function execute(
+    kind: Operation,
+    input: ExecutionInput,
+  ): Promise<Result & { predictions?: Suggestions["predictions"] }> {
+    const tasks: [string, () => Promise<(Unranked | null)[]>][] = [];
     if (kind === "search" || kind === "suggest") {
       if (georefUrl)
         tasks.push([
@@ -634,11 +717,16 @@ function createGeocoder(options = {}) {
         tasks.push([
           "georef_localities",
           async () => {
-            const data = await json("georef", georefUrl, "/localidades", {
-              nombre: input.city || input.street,
-              provincia: isCaba(input.province) ? "02" : input.province,
-              max: 5,
-            });
+            const data = await json<GeorefResponse>(
+              "georef",
+              georefUrl,
+              "/localidades",
+              {
+                nombre: input.city || input.street,
+                provincia: isCaba(input.province) ? "02" : input.province,
+                max: 5,
+              },
+            );
             if (!Array.isArray(data.localidades))
               throw new GeocodingError("provider_invalid", 503);
             return data.localidades.map((d) =>
@@ -664,7 +752,7 @@ function createGeocoder(options = {}) {
           "photon",
           async () =>
             photonCandidates(
-              await json("photon", photonUrl, "/api", {
+              await json<PhotonResponse>("photon", photonUrl, "/api", {
                 q: [input.query, input.city, input.province, "Argentina"]
                   .filter(Boolean)
                   .join(", "),
@@ -677,10 +765,15 @@ function createGeocoder(options = {}) {
         tasks.push([
           "georef",
           async () => {
-            const data = await json("georef", georefUrl, "/ubicacion", {
-              lat: input.lat,
-              lon: input.lng,
-            });
+            const data = await json<GeorefResponse>(
+              "georef",
+              georefUrl,
+              "/ubicacion",
+              {
+                lat: input.lat,
+                lon: input.lng,
+              },
+            );
             if (!data.ubicacion)
               throw new GeocodingError("provider_invalid", 503);
             const u = data.ubicacion;
@@ -700,7 +793,7 @@ function createGeocoder(options = {}) {
           "photon",
           async () =>
             photonCandidates(
-              await json("photon", photonUrl, "/reverse", {
+              await json<PhotonResponse>("photon", photonUrl, "/reverse", {
                 lat: input.lat,
                 lon: input.lng,
                 limit: 3,
@@ -714,7 +807,7 @@ function createGeocoder(options = {}) {
     // Partial autocomplete never consumes its budget; own instances can serve all requests.
     const primary = settled
       .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
-      .filter(Boolean);
+      .filter(present);
     const adequate =
       kind === "reverse"
         ? primary.some((r) => r.precision === "address")
@@ -731,7 +824,7 @@ function createGeocoder(options = {}) {
       (kind === "reverse" || input.number)
     ) {
       const run = () =>
-        json(
+        json<PhotonResponse>(
           "photon",
           photonUrl,
           kind === "reverse" ? "/reverse" : "/api",
@@ -753,7 +846,7 @@ function createGeocoder(options = {}) {
     }));
     const found = settled
       .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
-      .filter(Boolean);
+      .filter(present);
     const candidates =
       kind === "search" || kind === "suggest"
         ? rank(found, input).filter(
@@ -762,7 +855,7 @@ function createGeocoder(options = {}) {
         : found
             .map((r) => ({
               ...r,
-              confidence: "low",
+              confidence: "low" as const,
               warnings: ["confirm_pin"],
               score: r.precision === "region" ? 0 : 10,
             }))
@@ -780,7 +873,7 @@ function createGeocoder(options = {}) {
                 lng: r.lng,
                 label: r.label,
                 precision: r.precision,
-              }),
+              })!,
             })),
           }
         : {}),
@@ -789,7 +882,9 @@ function createGeocoder(options = {}) {
         : unavailable
           ? "unavailable"
           : "not_found",
-      candidates: candidates.filter((r) => coordinates(r.lat, r.lng)),
+      candidates: candidates.filter(
+        (r): r is Ranked & Candidate => coordinates(r.lat, r.lng) !== null,
+      ),
       providers,
       requiresConfirmation: true,
       warnings: [
@@ -800,16 +895,20 @@ function createGeocoder(options = {}) {
       ],
     };
   }
-  async function cached(kind, input) {
+  async function cached<T extends Result | CatalogResult>(
+    kind: string,
+    input: unknown,
+    run: () => Promise<T>,
+  ): Promise<T> {
     const key = createHash("sha256")
       .update(JSON.stringify([kind, input]))
       .digest("hex");
     const entry = cache.get(key);
     if (entry && entry.expires > Date.now())
-      return structuredClone(entry.value);
-    if (pending.has(key)) return structuredClone(await pending.get(key));
+      return structuredClone(entry.value) as T;
+    if (pending.has(key)) return structuredClone(await pending.get(key)) as T;
     if (pending.size >= 32) throw new GeocodingError("service_busy", 503);
-    const request = execute(kind, input)
+    const request = run()
       .then((value) => {
         if (
           value.status !== "unavailable" &&
@@ -830,22 +929,36 @@ function createGeocoder(options = {}) {
     return structuredClone(await request);
   }
   return {
-    search: (raw) => cached("search", normalizeInput(raw)),
-    suggest: (raw) => cached("suggest", normalizeInput(raw)),
-    provinces: (raw = {}) => cached("provinces", normalizeCatalog(raw)),
+    search: (raw) => {
+      const input = normalizeInput(raw);
+      return cached("search", input, () => execute("search", input));
+    },
+    suggest: async (raw) => {
+      const input = normalizeInput(raw);
+      const result = await cached("suggest", input, () =>
+        execute("suggest", input),
+      );
+      return { ...result, predictions: result.predictions ?? [] };
+    },
+    provinces: (raw = {}) => {
+      const input = normalizeCatalog(raw);
+      return cached("provinces", input, () => catalog("provinces", input));
+    },
     localities: (raw = {}) => {
       const input = normalizeCatalog(raw);
       if (!input.province && input.query.length < 3)
         throw new GeocodingError("locality_context_required");
-      return cached("localities", input);
+      return cached("localities", input, () => catalog("localities", input));
     },
     providers: () => ({
-      providers: [
-        ["georef", Boolean(georefUrl), "Argentina"],
-        ["usig", Boolean(usigUrl), "CABA y AMBA"],
-        ["photon", Boolean(photonUrl), "Según instancia configurada"],
-        ["geoapify", Boolean(geoapifyKey), "Argentina"],
-      ].map(([name, enabled, coverage]) => ({
+      providers: (
+        [
+          ["georef", Boolean(georefUrl), "Argentina"],
+          ["usig", Boolean(usigUrl), "CABA y AMBA"],
+          ["photon", Boolean(photonUrl), "Según instancia configurada"],
+          ["geoapify", Boolean(geoapifyKey), "Argentina"],
+        ] satisfies [Provider, boolean, string][]
+      ).map(([name, enabled, coverage]) => ({
         name,
         enabled,
         coverage,
@@ -855,14 +968,17 @@ function createGeocoder(options = {}) {
     reverse: (raw) => {
       const point = coordinates(raw?.lat, raw?.lng);
       if (!point) throw new GeocodingError("invalid_coordinates");
-      return cached("reverse", point);
+      return cached("reverse", point, () =>
+        execute("reverse", { ...emptyInput, ...point }),
+      );
     },
     clearCache: () => {
       for (const key of cache.keys()) evict(key);
     },
   };
 }
-function normalizeCatalog(raw) {
+function normalizeCatalog(value: unknown) {
+  const raw = record(value);
   if (!raw || typeof raw !== "object" || Array.isArray(raw))
     throw new GeocodingError("invalid_input");
   const query = text(raw.query);
@@ -871,12 +987,3 @@ function normalizeCatalog(raw) {
     throw new GeocodingError("invalid_context");
   return { query, province };
 }
-module.exports = {
-  createGeocoder,
-  normalizeInput,
-  coordinates,
-  rank,
-  candidate,
-  GeocodingError,
-  ATTRIBUTIONS,
-};

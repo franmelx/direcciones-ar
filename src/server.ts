@@ -1,8 +1,7 @@
-"use strict";
-const http = require("node:http");
-const fs = require("node:fs");
-const path = require("node:path");
-const { createHandler } = require("./http");
+import * as http from "node:http";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { createHandler } from "./http";
 const handler = createHandler({
   geoapifyKey: process.env.GEOAPIFY_API_KEY || undefined,
   georefUrl: process.env.GEOREF_URL || undefined,
@@ -15,16 +14,22 @@ const handler = createHandler({
     .split(",")
     .filter(Boolean),
 });
-const assets = {
+const assets: Record<string, [string, string]> = {
   "/": ["index.html", "text/html; charset=utf-8"],
   "/demo.js": ["demo.js", "text/javascript; charset=utf-8"],
   "/style.css": ["style.css", "text/css; charset=utf-8"],
 };
 const server = http.createServer((req, res) => {
-  const asset = assets[new URL(req.url, "http://localhost").pathname];
+  const asset = assets[new URL(req.url || "/", "http://localhost").pathname];
   if (asset && req.method === "GET") {
     res.setHeader("Content-Type", asset[1]);
-    fs.createReadStream(path.join(__dirname, "../demo", asset[0])).pipe(res);
+    fs.createReadStream(
+      path.join(
+        __dirname,
+        asset[0] === "demo.js" ? "demo" : "../demo",
+        asset[0],
+      ),
+    ).pipe(res);
     return;
   }
   handler(req, res);

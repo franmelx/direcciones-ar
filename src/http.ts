@@ -1,15 +1,29 @@
-"use strict";
-const { createGeocoder } = require("./index");
-const { spec, docs } = require("./openapi");
-const { version } = require("../package.json");
-function createHandler(options = {}) {
+import {
+  createGeocoder,
+  GeocodingError,
+  normalizeInput,
+  coordinates,
+} from "./index";
+import type { Options, Geocoder } from "./types";
+import type { IncomingMessage, ServerResponse } from "node:http";
+export interface HandlerOptions extends Options {
+  allowedOrigins?: string[];
+  requestsPerMinute?: number;
+  geocoder?: Geocoder;
+}
+import { spec, docs } from "./openapi";
+import { version } from "./version";
+export function createHandler(options: HandlerOptions = {}) {
   const geocoder = options.geocoder || createGeocoder(options);
-  const clients = new Map();
-  return async function handler(req, res) {
+  const clients = new Map<string, { count: number; until: number }>();
+  return async function handler(
+    req: IncomingMessage & { body?: unknown },
+    res: ServerResponse,
+  ) {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("X-Content-Type-Options", "nosniff");
-    const send = (status, value) => {
+    const send = (status: number, value: unknown) => {
       if (!res.destroyed) {
         res.statusCode = status;
         res.end(JSON.stringify(value));
@@ -27,7 +41,7 @@ function createHandler(options = {}) {
       res.end();
       return;
     }
-    const url = new URL(req.url, "http://localhost");
+    const url = new URL(req.url || "/", "http://localhost");
     const endpoint = url.pathname.replace(/^\/v1(?=\/)/, "");
     if (endpoint === "/health") return send(200, { status: "ok", version });
     if (endpoint === "/openapi.json") return send(200, spec);
@@ -47,7 +61,7 @@ function createHandler(options = {}) {
       ].includes(endpoint)
     )
       return send(404, { error: "not_found" });
-    if (!["GET", "POST"].includes(req.method)) {
+    if (!["GET", "POST"].includes(req.method || "")) {
       res.setHeader("Allow", "GET, POST");
       return send(405, { error: "method_not_allowed" });
     }
@@ -66,7 +80,7 @@ function createHandler(options = {}) {
       return send(429, { error: "rate_limited" });
     }
     try {
-      let input = Object.fromEntries(url.searchParams);
+      let input: unknown = Object.fromEntries(url.searchParams);
       if (req.method === "POST") {
         if (
           !String(req.headers["content-type"] || "").includes(
@@ -93,12 +107,43 @@ function createHandler(options = {}) {
           }
         }
       }
-      const data = await geocoder[endpoint.slice(1)](input);
+      // Public methods normalize untrusted HTTP input before calling providers.
+      let data;
+      switch (endpoint) {
+        case "/search":
+        case "/suggest":
+          data = await geocoder[endpoint === "/search" ? "search" : "suggest"](
+            normalizeInput(input),
+          );
+          break;
+        case "/reverse": {
+          const raw =
+            input && typeof input === "object"
+              ? (input as Record<string, unknown>)
+              : {};
+          const point = coordinates(raw.lat, raw.lng);
+          if (!point) throw new GeocodingError("invalid_coordinates");
+          data = await geocoder.reverse(point);
+          break;
+        }
+        default: {
+          if (!input || typeof input !== "object" || Array.isArray(input))
+            throw new GeocodingError("invalid_input");
+          const raw = input as Record<string, unknown>;
+          for (const key of ["query", "province"])
+            if (raw[key] !== undefined && typeof raw[key] !== "string")
+              throw new GeocodingError("invalid_context");
+          data = await geocoder[
+            endpoint === "/provinces" ? "provinces" : "localities"
+          ](raw as { query?: string; province?: string });
+        }
+      }
       if (data.status === "unavailable") res.setHeader("Retry-After", "5");
       send(data.status === "unavailable" ? 503 : 200, data);
     } catch (error) {
-      send(error.status || 500, { error: error.code || "internal_error" });
+      send(error instanceof GeocodingError ? error.status : 500, {
+        error: error instanceof GeocodingError ? error.code : "internal_error",
+      });
     }
   };
 }
-module.exports = { createHandler };

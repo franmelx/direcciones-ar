@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Node",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "skipLibCheck": true,
+    "types": ["leaflet"],
+    "sourceMap": true,
+    "outDir": "dist/demo",
+    "rootDir": "demo"
+  },
+  "include": ["demo/demo.ts"]
+}

@@ -13,4 +13,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '${{ matrix.node }}'
+      - run: npm ci
       - run: npm test
+      - run: npm run typecheck
+      - run: npm pack --dry-run

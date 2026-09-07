@@ -1,5 +1,10 @@
-"use strict";
-const { version } = require("../package.json");
+type Schema = {
+  type?: string;
+  properties?: Record<string, unknown>;
+  required?: string[];
+  [key: string]: unknown;
+};
+import { version } from "./version";
 const string = { type: "string", maxLength: 100 };
 const search = {
   type: "object",
@@ -27,16 +32,19 @@ const catalog = {
   properties: { query: string, province: string },
   additionalProperties: false,
 };
-const ref = (name) => ({ $ref: "#/components/schemas/" + name });
-const json = (schema) => ({ "application/json": { schema } });
-const examples = {
+const ref = (name: string) => ({ $ref: "#/components/schemas/" + name });
+const json = (schema: unknown) => ({ "application/json": { schema } });
+const examples: Record<string, unknown> = {
   suggest: { query: "Corrien", city: "CABA" },
   search: { query: "Av. Corrientes", number: "1234", city: "CABA" },
   reverse: { lat: -34.603856, lng: -58.38419 },
   provinces: {},
   localities: { query: "San", province: "Buenos Aires" },
 };
-const operations = {
+const operations: Record<
+  string,
+  [string, Schema & { properties: Record<string, unknown> }, string]
+> = {
   suggest: [
     "Predicciones de calles, localidades y direcciones",
     search,
@@ -63,15 +71,15 @@ const operations = {
     "Catalog",
   ],
 };
-const paths = {};
+const paths: Record<string, unknown> = {};
 for (const [name, [summary, input, output]] of Object.entries(operations)) {
-  const responses = {
+  const responses: Record<number, unknown> = {
     200: {
       description: "Resultado; puede ser not_found",
       content: json(ref(output)),
     },
   };
-  for (const status of [400, 413, 415, 429, 503])
+  for (const status of [400, 413, 415, 429, 503] as const)
     responses[status] = {
       description: {
         400: "Entrada inválida",
@@ -150,7 +158,7 @@ paths["/v1/providers"] = {
     },
   },
 };
-const spec = {
+export const spec = {
   openapi: "3.1.0",
   info: {
     title: "Direcciones AR",
@@ -288,7 +296,7 @@ const spec = {
     },
   },
 };
-const docs = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>API Direcciones AR</title><style>body{font:16px system-ui;max-width:900px;margin:30px auto;padding:20px;color:#183449}textarea,select,button{font:inherit;padding:12px;box-sizing:border-box}textarea{display:block;width:100%;height:160px;margin:20px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f5f8;padding:20px}button{cursor:pointer}a{color:#176e85}</style><h1>API Direcciones AR ${version}</h1><p>Autocompletado, búsqueda, geocodificación inversa, provincias y localidades. <a href="openapi.json">Descargar OpenAPI 3.1</a></p><p>Predicciones desde 3 caracteres. Si <code>requiresResolution</code> es verdadero, completá la altura y consultá <code>search</code>. Confirmá el marcador antes de usarlo para entregar un pedido.</p><label>Operación <select id="operation">${Object.entries(
+export const docs = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>API Direcciones AR</title><style>body{font:16px system-ui;max-width:900px;margin:30px auto;padding:20px;color:#183449}textarea,select,button{font:inherit;padding:12px;box-sizing:border-box}textarea{display:block;width:100%;height:160px;margin:20px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f5f8;padding:20px}button{cursor:pointer}a{color:#176e85}</style><h1>API Direcciones AR ${version}</h1><p>Autocompletado, búsqueda, geocodificación inversa, provincias y localidades. <a href="openapi.json">Descargar OpenAPI 3.1</a></p><p>Predicciones desde 3 caracteres. Si <code>requiresResolution</code> es verdadero, completá la altura y consultá <code>search</code>. Confirmá el marcador antes de usarlo para entregar un pedido.</p><label>Operación <select id="operation">${Object.entries(
   operations,
 )
   .map(
@@ -297,4 +305,3 @@ const docs = `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="v
   .join(
     "",
   )}</select></label><label for="body"><p>Cuerpo JSON de prueba (sin datos personales)</p></label><textarea id="body"></textarea><button id="send">Enviar POST</button><p id="status" role="status"></p><pre id="result"></pre><p><a href="providers">Fuentes configuradas</a> · <a href="https://github.com/franmelx/direcciones-ar">Código MIT</a></p><script>const examples=${JSON.stringify(examples)};const operation=document.querySelector('#operation'),body=document.querySelector('#body');const example=()=>body.value=JSON.stringify(examples[operation.value],null,2);operation.onchange=example;example();document.querySelector('#send').onclick=async()=>{const status=document.querySelector('#status');try{JSON.parse(body.value);status.textContent='Consultando…';const r=await fetch(operation.value,{method:'POST',headers:{'Content-Type':'application/json'},body:body.value,signal:AbortSignal.timeout(12000)});status.textContent='HTTP '+r.status;document.querySelector('#result').textContent=JSON.stringify(await r.json(),null,2);}catch{status.textContent='Revisá el JSON o reintentá la conexión.';}};</script></html>`;
-module.exports = { spec, docs };
