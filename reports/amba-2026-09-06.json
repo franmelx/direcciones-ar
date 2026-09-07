@@ -1,0 +1,2087 @@
+{
+  "date": "2026-09-07T02:16:03.035Z",
+  "seed": 20260906,
+  "photonEnabled": true,
+  "method": "Alturas aleatorias en 20 calles conocidas de AMBA; alturas y puertas no verificadas. Georef, USIG y fuentes opcionales configuradas; sin verificación física de puerta. Sin domicilios de clientes.",
+  "summary": {
+    "evaluated": 20,
+    "withCandidates": 20,
+    "notFound": 0,
+    "unavailable": 0,
+    "topWithWarnings": 10
+  },
+  "cases": [
+    {
+      "input": {
+        "query": "Balbastro",
+        "number": "3998",
+        "city": "San Justo",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 6062,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "unavailable"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:51ee330fb3d4bfc8",
+          "lat": -34.69174219717347,
+          "lng": -58.565959770795914,
+          "label": "BALBASTRO 3998, San Justo, La Matanza, Buenos Aires",
+          "address": {
+            "street": "BALBASTRO",
+            "number": "3998",
+            "city": "San Justo",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Almirante Brown",
+        "number": "912",
+        "city": "Morón",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 7086,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "unavailable"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:08f650068ccd4bae",
+          "lat": -34.65056941702128,
+          "lng": -58.621384127659574,
+          "label": "Almirante Brown 912, Morón, Buenos Aires",
+          "address": {
+            "street": "Almirante Brown",
+            "number": "912",
+            "city": "Morón",
+            "province": "Buenos Aires",
+            "postcode": "1708"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 115,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Avenida de Mayo",
+        "number": "786",
+        "city": "Ramos Mejía",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1242,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:f5246e1c35004c18",
+          "lat": -34.64792078311224,
+          "lng": -58.564137061857146,
+          "label": "AV DE MAYO 786, Ramos Mejía, La Matanza, Buenos Aires",
+          "address": {
+            "street": "AV DE MAYO",
+            "number": "786",
+            "city": "Ramos Mejía",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Avenida Maipú",
+        "number": "2356",
+        "city": "Vicente López",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 2434,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:f71fd7919d4e05d6",
+          "lat": -34.50535133366882,
+          "lng": -58.49368820982763,
+          "label": "AV MAIPU 2356, Vicente López, Vicente López, Buenos Aires",
+          "address": {
+            "street": "AV MAIPU",
+            "number": "2356",
+            "city": "Vicente López",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        },
+        {
+          "id": "georef:cabefe0227143d91",
+          "lat": -34.50474630680351,
+          "lng": -58.49400497580853,
+          "label": "AV MAIPU 2356, Olivos, Vicente López, Buenos Aires",
+          "address": {
+            "street": "AV MAIPU",
+            "number": "2356",
+            "city": "Olivos",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "usig:93fb849f8eb4ddda",
+          "lat": -34.5049812290187,
+          "lng": -58.4937909259522,
+          "label": "Avenida Maipú 2356, Vicente López",
+          "address": {
+            "street": "Avenida Maipú",
+            "number": "2356",
+            "city": "La Lucila",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "usig:93fb849f8eb4ddda",
+          "lat": -34.5049812290187,
+          "lng": -58.4937909259522,
+          "label": "Avenida Maipú 2356, Vicente López",
+          "address": {
+            "street": "Avenida Maipú",
+            "number": "2356",
+            "city": "Olivos",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "9 de Julio",
+        "number": "450",
+        "city": "San Isidro",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1232,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:7480bd066d7378ad",
+          "lat": -34.468609433338905,
+          "lng": -58.51074441793229,
+          "label": "9 DE JULIO 450, San Isidro, San Isidro, Buenos Aires",
+          "address": {
+            "street": "9 DE JULIO",
+            "number": "450",
+            "city": "San Isidro",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Constitución",
+        "number": "508",
+        "city": "San Fernando",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1231,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:42c06d1b965c395c",
+          "lat": -34.437573822714285,
+          "lng": -58.56119838228572,
+          "label": "CONSTITUCION 508, San Fernando, San Fernando, Buenos Aires",
+          "address": {
+            "street": "CONSTITUCION",
+            "number": "508",
+            "city": "San Fernando",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Cazón",
+        "number": "292",
+        "city": "Tigre",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 2293,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:02767eb0c778209e",
+          "lat": -34.43262969148936,
+          "lng": -58.56881668297872,
+          "label": "Avenida Daniel M. Cazón 292, Tigre, Buenos Aires",
+          "address": {
+            "street": "Avenida Daniel M. Cazón",
+            "number": "292",
+            "city": "Tigre",
+            "province": "Buenos Aires",
+            "postcode": "B1648EWP"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:cb44b3f2cd7e6817",
+          "lat": -34.39620116557143,
+          "lng": -58.661265872,
+          "label": "B CAZON 292, Tigre, Tigre, Buenos Aires",
+          "address": {
+            "street": "B CAZON",
+            "number": "292",
+            "city": "Tigre",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:99fef24903765857",
+          "lat": -34.39617545,
+          "lng": -58.6613059714286,
+          "label": "Cazón 292, Tigre",
+          "address": {
+            "street": "Cazón",
+            "number": "292",
+            "city": "Benavídez",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Belgrano",
+        "number": "3360",
+        "city": "General San Martín",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1524,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:0bcee229861e07b7",
+          "lat": -34.5432751662,
+          "lng": -58.571977541466666,
+          "label": "BELGRANO 3360, Villa Godoy Cruz, General San Martín, Buenos Aires",
+          "address": {
+            "street": "BELGRANO",
+            "number": "3360",
+            "city": "Villa Godoy Cruz",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "usig:e5d2ff8f1afdb90c",
+          "lat": -34.5750187612245,
+          "lng": -58.534157544898,
+          "label": "52 - Belgrano 3360, General San Martín",
+          "address": {
+            "street": "52 - Belgrano",
+            "number": "3360",
+            "city": "General San Martín",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "photon:9f8680c3bc17608c",
+          "lat": -34.575061655319146,
+          "lng": -58.534145968085106,
+          "label": "52 - Belgrano 3360, Ciudad del Libertador General San Martín, Buenos Aires",
+          "address": {
+            "street": "52 - Belgrano",
+            "number": "3360",
+            "city": "Ciudad del Libertador General San Martín",
+            "province": "Buenos Aires",
+            "postcode": "B1650BHH"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 85,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match",
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Güemes",
+        "number": "106",
+        "city": "Avellaneda",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1491,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:5c5f33e25e1425c3",
+          "lat": -34.66952700425532,
+          "lng": -58.35648207234043,
+          "label": "General Güemes 106, Avellaneda, Buenos Aires",
+          "address": {
+            "street": "General Güemes",
+            "number": "106",
+            "city": "Avellaneda",
+            "province": "Buenos Aires",
+            "postcode": "1870"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:037f9cd99e396cbd",
+          "lat": -34.67011536440817,
+          "lng": -58.35730827244898,
+          "label": "AV GENERAL GUEMES 106, Avellaneda, Avellaneda, Buenos Aires",
+          "address": {
+            "street": "AV GENERAL GUEMES",
+            "number": "106",
+            "city": "Avellaneda",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:38e1f7802b369aa3",
+          "lat": -34.6694091918367,
+          "lng": -58.356465422449,
+          "label": "General Güemes 106, Avellaneda",
+          "address": {
+            "street": "General Güemes",
+            "number": "106",
+            "city": "Gerli",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 75,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match",
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Hipólito Yrigoyen",
+        "number": "3164",
+        "city": "Lanús",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1547,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:2f0682376b1f1dc7",
+          "lat": -34.69283899361702,
+          "lng": -58.38962561276596,
+          "label": "Avenida Hipólito Yrigoyen 3164, Lanús Oeste, Buenos Aires",
+          "address": {
+            "street": "Avenida Hipólito Yrigoyen",
+            "number": "3164",
+            "city": "Lanús Oeste",
+            "province": "Buenos Aires",
+            "postcode": "1823"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "georef:1297bb8a2f32e98b",
+          "lat": -34.69218436355102,
+          "lng": -58.38950103210204,
+          "label": "HIPOLITO YRIGOYEN 3164, Lanús Oeste, Lanús, Buenos Aires",
+          "address": {
+            "street": "HIPOLITO YRIGOYEN",
+            "number": "3164",
+            "city": "Lanús Oeste",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "usig:3644897d2a871067",
+          "lat": -34.6925883928572,
+          "lng": -58.3897808428572,
+          "label": "Avenida Hipólito Yrigoyen 3164, Lanús",
+          "address": {
+            "street": "Avenida Hipólito Yrigoyen",
+            "number": "3164",
+            "city": "Lanús Oeste",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Manuel Castro",
+        "number": "404",
+        "city": "Lomas de Zamora",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1305,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:c2c9a2e6b6c38def",
+          "lat": -34.755426552582136,
+          "lng": -58.40304421211826,
+          "label": "MANUEL CASTRO 404, Lomas de Zamora, Lomas de Zamora, Buenos Aires",
+          "address": {
+            "street": "MANUEL CASTRO",
+            "number": "404",
+            "city": "Lomas de Zamora",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        },
+        {
+          "id": "usig:222c04f7f8c4bf6c",
+          "lat": -34.7554199644833,
+          "lng": -58.4030215967048,
+          "label": "Senador Manuel Castro 404, Lomas de Zamora",
+          "address": {
+            "street": "Senador Manuel Castro",
+            "number": "404",
+            "city": "Lomas de Zamora",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Alberdi",
+        "number": "762",
+        "city": "Quilmes",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 3709,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:b68ec55e432cb398",
+          "lat": -38.1582675106383,
+          "lng": -58.77296001276596,
+          "label": "Alberdi 762, Lobería, Buenos Aires",
+          "address": {
+            "street": "Alberdi",
+            "number": "762",
+            "city": "Lobería",
+            "province": "Buenos Aires",
+            "postcode": "7635"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:9af3682c7c5c59a3",
+          "lat": -37.69738048453608,
+          "lng": -63.15492155773196,
+          "label": "Alberdi 762, Darregueira, Buenos Aires",
+          "address": {
+            "street": "Alberdi",
+            "number": "762",
+            "city": "Darregueira",
+            "province": "Buenos Aires",
+            "postcode": "8183"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:67ec7f7b474a9756",
+          "lat": -34.76170069148936,
+          "lng": -61.89811382765958,
+          "label": "Alberdi 762, General Pinto, Buenos Aires",
+          "address": {
+            "street": "Alberdi",
+            "number": "762",
+            "city": "General Pinto",
+            "province": "Buenos Aires",
+            "postcode": "B6050"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:4326913829d047aa",
+          "lat": -37.8527972,
+          "lng": -58.2569763,
+          "label": "25 - Alberdi 762, San José de Balcarce, Buenos Aires",
+          "address": {
+            "street": "25 - Alberdi",
+            "number": "762",
+            "city": "San José de Balcarce",
+            "province": "Buenos Aires",
+            "postcode": "7620"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 85,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match",
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:9621240f59bf31b9",
+          "lat": -37.45338895106383,
+          "lng": -61.942473689361705,
+          "label": "Juan Bautista Alberdi 762, Mar del Plata, Buenos Aires",
+          "address": {
+            "street": "Juan Bautista Alberdi",
+            "number": "762",
+            "city": "Mar del Plata",
+            "province": "Buenos Aires",
+            "postcode": "B7540"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 85,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match",
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:85a685fc5dfdb6b4",
+          "lat": -34.7194651,
+          "lng": -58.2643028,
+          "label": "Alberdi",
+          "address": {
+            "street": "",
+            "number": "",
+            "city": "Quilmes",
+            "province": "Buenos Aires",
+            "postcode": "B1878"
+          },
+          "provider": "photon",
+          "precision": "locality",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 30,
+          "confidence": "low",
+          "warnings": [
+            "approximate_area",
+            "number_mismatch"
+          ]
+        },
+        {
+          "id": "photon:8deb78732f251877",
+          "lat": -34.7134279,
+          "lng": -58.253998,
+          "label": "Alberdi",
+          "address": {
+            "street": "",
+            "number": "",
+            "city": "Quilmes",
+            "province": "Buenos Aires",
+            "postcode": "B1878"
+          },
+          "provider": "photon",
+          "precision": "locality",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 30,
+          "confidence": "low",
+          "warnings": [
+            "approximate_area",
+            "number_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Calle 14",
+        "number": "394",
+        "city": "Berazategui",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 4660,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:ebf23227b9adc257",
+          "lat": -34.75496265586345,
+          "lng": -58.220584136248995,
+          "label": "CALLE 144 394, Berazategui, Berazategui, Buenos Aires",
+          "address": {
+            "street": "CALLE 144",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:c681012c51773445",
+          "lat": -34.75533757878571,
+          "lng": -58.222895822938774,
+          "label": "CALLE 142 394, Berazategui, Berazategui, Buenos Aires",
+          "address": {
+            "street": "CALLE 142",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:e1d2a70421d55876",
+          "lat": -34.75592113962245,
+          "lng": -58.2240075304898,
+          "label": "CALLE 141 394, Berazategui, Berazategui, Buenos Aires",
+          "address": {
+            "street": "CALLE 141",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:ef9c6097454e872a",
+          "lat": -34.752115297992,
+          "lng": -58.2227229839358,
+          "label": "Calle 144 394, Berazategui",
+          "address": {
+            "street": "Calle 144",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:aee42553062259c3",
+          "lat": -34.7547539122449,
+          "lng": -58.2217512061224,
+          "label": "Calle 143 394, Berazategui",
+          "address": {
+            "street": "Calle 143",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:b842674336062de4",
+          "lat": -34.7509491,
+          "lng": -58.2157645204082,
+          "label": "Calle 149 394, Berazategui",
+          "address": {
+            "street": "Calle 149",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:43a95a4af841ca34",
+          "lat": -34.7500877996887,
+          "lng": -58.2181286567363,
+          "label": "Calle 148 394, Berazategui",
+          "address": {
+            "street": "Calle 148",
+            "number": "394",
+            "city": "Berazategui",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:ebfacd2f706ddb9f",
+          "lat": -34.79959520484556,
+          "lng": -58.17215296774308,
+          "label": "CALLE 148 394, Guillermo Enrique Hudson, Berazategui, Buenos Aires",
+          "address": {
+            "street": "CALLE 148",
+            "number": "394",
+            "city": "Guillermo Enrique Hudson",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 75,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match",
+            "city_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "25 de Mayo",
+        "number": "2266",
+        "city": "Florencio Varela",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 5212,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:4949ff684024fc44",
+          "lat": -34.8081255,
+          "lng": -58.2800387,
+          "label": "25 de Mayo",
+          "address": {
+            "street": "",
+            "number": "",
+            "city": "Florencio Varela",
+            "province": "Buenos Aires",
+            "postcode": "B1888"
+          },
+          "provider": "photon",
+          "precision": "locality",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 30,
+          "confidence": "low",
+          "warnings": [
+            "approximate_area",
+            "number_mismatch"
+          ]
+        },
+        {
+          "id": "photon:a3b8abfd7e7e9c96",
+          "lat": -34.7943355,
+          "lng": -58.2832738,
+          "label": "25 de Mayo de 1810",
+          "address": {
+            "street": "",
+            "number": "",
+            "city": "Florencio Varela",
+            "province": "Buenos Aires",
+            "postcode": "B1888"
+          },
+          "provider": "photon",
+          "precision": "locality",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 30,
+          "confidence": "low",
+          "warnings": [
+            "approximate_area",
+            "number_mismatch"
+          ]
+        },
+        {
+          "id": "photon:e7bda9ba60aa1514",
+          "lat": -34.780984,
+          "lng": -58.2786219,
+          "label": "Cooperativa 31 de Mayo",
+          "address": {
+            "street": "",
+            "number": "",
+            "city": "Florencio Varela",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "photon",
+          "precision": "locality",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 30,
+          "confidence": "low",
+          "warnings": [
+            "approximate_area",
+            "number_mismatch"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Rosales",
+        "number": "1236",
+        "city": "Adrogué",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1395,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:fc4e7d295974ef2e",
+          "lat": -34.80023483499264,
+          "lng": -58.38869560806637,
+          "label": "ROSALES 1236, Adrogué, Almirante Brown, Buenos Aires",
+          "address": {
+            "street": "ROSALES",
+            "number": "1236",
+            "city": "Adrogué",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        },
+        {
+          "id": "usig:8b225262c1d3625d",
+          "lat": -34.8002318363637,
+          "lng": -58.3881564222222,
+          "label": "Leonardo Rosales 1236, Almirante Brown",
+          "address": {
+            "street": "Leonardo Rosales",
+            "number": "1236",
+            "city": "Adrogué",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Vicente López",
+        "number": "120",
+        "city": "Monte Grande",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 3318,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:4a0054cfa9e2317b",
+          "lat": -34.81609962978723,
+          "lng": -58.470187595744676,
+          "label": "Vicente López y Planes 120, Monte Grande, Buenos Aires",
+          "address": {
+            "street": "Vicente López y Planes",
+            "number": "120",
+            "city": "Monte Grande",
+            "province": "Buenos Aires",
+            "postcode": "1842"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Gaspar Campos",
+        "number": "5822",
+        "city": "José C. Paz",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1473,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "usig:c723226d04a33a24",
+          "lat": -34.5305857204082,
+          "lng": -58.7499519040816,
+          "label": "Avenida Gaspar Campos 5822, José C. Paz",
+          "address": {
+            "street": "Avenida Gaspar Campos",
+            "number": "5822",
+            "city": "José C. Paz",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        },
+        {
+          "id": "georef:cd1715c53451eac5",
+          "lat": -34.52953090334379,
+          "lng": -58.75071179717124,
+          "label": "4196 GASPAR CAMPOS 5822, José C. Paz, José C. Paz, Buenos Aires",
+          "address": {
+            "street": "4196 GASPAR CAMPOS",
+            "number": "5822",
+            "city": "José C. Paz",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Sarmiento",
+        "number": "1394",
+        "city": "San Miguel",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 2899,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:b26865d0b22add63",
+          "lat": -34.441182304255314,
+          "lng": -58.55943017659574,
+          "label": "Sarmiento 1394, San Fernando, Buenos Aires",
+          "address": {
+            "street": "Sarmiento",
+            "number": "1394",
+            "city": "San Fernando",
+            "province": "Buenos Aires",
+            "postcode": "1646"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:2b5f7b3d811699ad",
+          "lat": -34.57093488181818,
+          "lng": -60.95661059090909,
+          "label": "Sarmiento 1394, Junín, Buenos Aires",
+          "address": {
+            "street": "Sarmiento",
+            "number": "1394",
+            "city": "Junín",
+            "province": "Buenos Aires",
+            "postcode": "B6000"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:4ddbfdf3f04da281",
+          "lat": -34.48086927659575,
+          "lng": -58.48694307872341,
+          "label": "Sarmiento 1394, Martínez, Buenos Aires",
+          "address": {
+            "street": "Sarmiento",
+            "number": "1394",
+            "city": "Martínez",
+            "province": "Buenos Aires",
+            "postcode": "B1640AOD"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:54d281a4724bc036",
+          "lat": -36.31327216170212,
+          "lng": -57.66318879574468,
+          "label": "Sarmiento 1394, Dolores, Buenos Aires",
+          "address": {
+            "street": "Sarmiento",
+            "number": "1394",
+            "city": "Dolores",
+            "province": "Buenos Aires",
+            "postcode": "B7100"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:9819567980ae5ab5",
+          "lat": -33.68539321276595,
+          "lng": -59.66365184893617,
+          "label": "Avenida Sarmiento 1394, San Pedro, Buenos Aires",
+          "address": {
+            "street": "Avenida Sarmiento",
+            "number": "1394",
+            "city": "San Pedro",
+            "province": "Buenos Aires",
+            "postcode": "B2930"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "georef:7dc8f97e1dfa1a32",
+          "lat": -34.54533306413659,
+          "lng": -58.70969000745195,
+          "label": "4168 DOMINGO F SARMIENTO 1394, San Miguel, San Miguel, Buenos Aires",
+          "address": {
+            "street": "4168 DOMINGO F SARMIENTO",
+            "number": "1394",
+            "city": "San Miguel",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "georef:4f282c2429cfa4b5",
+          "lat": -34.561856919662254,
+          "lng": -58.726893769303516,
+          "label": "4224 MTRO SARMIENTO 1394, San Miguel, San Miguel, Buenos Aires",
+          "address": {
+            "street": "4224 MTRO SARMIENTO",
+            "number": "1394",
+            "city": "San Miguel",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        },
+        {
+          "id": "usig:53b5664b9594b411",
+          "lat": -34.5446162530612,
+          "lng": -58.710704422449,
+          "label": "Domingo Faustino Sarmiento 1394, San Miguel",
+          "address": {
+            "street": "Domingo Faustino Sarmiento",
+            "number": "1394",
+            "city": "San Miguel",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 90,
+          "confidence": "low",
+          "warnings": [
+            "street_partial_match"
+          ]
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Avenida del Libertador",
+        "number": "146",
+        "city": "Merlo",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 1387,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "georef:c27f6515cd9e0e98",
+          "lat": -34.67266984771428,
+          "lng": -58.72415961606122,
+          "label": "AV DEL LIBERTADOR 146, Merlo, Merlo, Buenos Aires",
+          "address": {
+            "street": "AV DEL LIBERTADOR",
+            "number": "146",
+            "city": "Merlo",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "georef",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "Georef · Datos Argentina",
+            "url": "https://www.argentina.gob.ar/georef"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        },
+        {
+          "id": "usig:ef2710780bee8dfa",
+          "lat": -34.6729107545338,
+          "lng": -58.7237997824201,
+          "label": "Av. del Libertador 146, Merlo",
+          "address": {
+            "street": "Av. del Libertador",
+            "number": "146",
+            "city": "Merlo",
+            "province": "Buenos Aires",
+            "postcode": ""
+          },
+          "provider": "usig",
+          "precision": "interpolated",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "USIG · Buenos Aires Ciudad",
+            "url": "https://usig.buenosaires.gob.ar/"
+          },
+          "score": 105,
+          "confidence": "medium",
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "input": {
+        "query": "Bartolomé Mitre",
+        "number": "1144",
+        "city": "Moreno",
+        "province": "Buenos Aires"
+      },
+      "status": "ok",
+      "elapsedMs": 2862,
+      "providers": [
+        {
+          "name": "georef",
+          "status": "ok"
+        },
+        {
+          "name": "usig",
+          "status": "ok"
+        },
+        {
+          "name": "photon",
+          "status": "ok"
+        }
+      ],
+      "candidates": [
+        {
+          "id": "photon:a0176ad0476e3da3",
+          "lat": -35.188213374468084,
+          "lng": -59.08246264042553,
+          "label": "Bartolomé Mitre 1144, Empalme Lobos, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Empalme Lobos",
+            "province": "Buenos Aires",
+            "postcode": "B7240CRB"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:58da239ced80d498",
+          "lat": -33.892805972340426,
+          "lng": -60.579043874468084,
+          "label": "Bartolomé Mitre 1144, Pergamino, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Pergamino",
+            "province": "Buenos Aires",
+            "postcode": "2700"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:1af3a26fa06d6b47",
+          "lat": -37.984575412765956,
+          "lng": -61.35173799787234,
+          "label": "Bartolomé Mitre 1144, Coronel Pringles, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Coronel Pringles",
+            "province": "Buenos Aires",
+            "postcode": "7530"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:ed5f57725e252d33",
+          "lat": -34.67714075531915,
+          "lng": -58.70680162765957,
+          "label": "Bartolomé Mitre 1144, Merlo, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Merlo",
+            "province": "Buenos Aires",
+            "postcode": "B1718EVD"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:7c5aff215025a57e",
+          "lat": -34.65294913404255,
+          "lng": -58.62471422978723,
+          "label": "Bartolomé Mitre 1144, Morón, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Morón",
+            "province": "Buenos Aires",
+            "postcode": "B1708DYO"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:f9a371b5266fa6c8",
+          "lat": -34.79760786597938,
+          "lng": -58.391966125773195,
+          "label": "Bartolomé Mitre 1144, Adrogué, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Adrogué",
+            "province": "Buenos Aires",
+            "postcode": "B1846"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:a469fe4705200acb",
+          "lat": -37.994006227659575,
+          "lng": -57.54515576808511,
+          "label": "Bartolomé Mitre 1144, Mar del Plata, Buenos Aires",
+          "address": {
+            "street": "Bartolomé Mitre",
+            "number": "1144",
+            "city": "Mar del Plata",
+            "province": "Buenos Aires",
+            "postcode": "B7600DRN"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        },
+        {
+          "id": "photon:6e9f2a1c9ecbadbc",
+          "lat": -34.664446206382976,
+          "lng": -58.36084175957447,
+          "label": "Avenida Bartolomé Mitre 1144, Avellaneda, Buenos Aires",
+          "address": {
+            "street": "Avenida Bartolomé Mitre",
+            "number": "1144",
+            "city": "Avellaneda",
+            "province": "Buenos Aires",
+            "postcode": "1870"
+          },
+          "provider": "photon",
+          "precision": "address",
+          "requiresConfirmation": true,
+          "attribution": {
+            "name": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright"
+          },
+          "score": 100,
+          "confidence": "low",
+          "warnings": [
+            "city_mismatch"
+          ]
+        }
+      ]
+    }
+  ]
+}
