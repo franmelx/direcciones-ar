@@ -1,7 +1,7 @@
 {
   "name": "direcciones-ar",
-  "version": "0.3.0",
-  "description": "B\u00fasqueda y normalizaci\u00f3n de direcciones argentinas con precisi\u00f3n expl\u00edcita y proveedores configurables",
+  "version": "0.4.0",
+  "description": "Búsqueda y normalización de direcciones argentinas con precisión explícita y proveedores configurables",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,8 +29,11 @@
     "url": "https://github.com/franmelx/direcciones-ar.git"
   },
   "devDependencies": {
-    "typescript": "~5.9.3",
+    "@types/leaflet": "^1.9.0",
     "@types/node": "^22.0.0",
-    "@types/leaflet": "^1.9.0"
+    "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "@turf/distance": "7.3.5"
   }
 }

@@ -656,13 +656,167 @@ test("public Photon budget stops upstream requests while leaving a recoverable r
   assert.ok(result.warnings.includes("select_on_map"));
 });
 
-
 test("package version and generated entry points match the implementation", async () => {
   const { readFileSync } = await import("node:fs");
-  const pkg = JSON.parse(readFileSync("package.json", "utf8")) as { version: string; main: string; types: string };
+  const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
+    version: string;
+    main: string;
+    types: string;
+  };
   const { version } = await import("../src/version");
   assert.equal(pkg.version, version);
   assert.equal(pkg.main, "dist/index.js");
   assert.equal(pkg.types, "dist/index.d.ts");
   assert.match(readFileSync(pkg.types, "utf8"), /createGeocoder/);
+});
+
+test("Pelias provides typed autocomplete, search and reverse with country filtering and private keys", async () => {
+  const calls: URL[] = [];
+  const g = createGeocoder({
+    georefUrl: false,
+    usigUrl: false,
+    peliasUrl: "https://pelias.test",
+    peliasKey: "synthetic-key",
+    minIntervalMs: 0,
+    fetch: async (url) => {
+      calls.push(url);
+      return response({
+        features: [
+          {
+            properties: {
+              country_a: "ARG",
+              street: "Corrientes",
+              housenumber: "1234",
+              locality: "CABA",
+              region: "CABA",
+              label: "Corrientes 1234, CABA",
+              accuracy: "point",
+            },
+            geometry: { coordinates: [-58.38, -34.6] },
+          },
+          {
+            properties: { country_a: "CHL", label: "Foreign" },
+            geometry: { coordinates: [-58.38, -34.6] },
+          },
+        ],
+      });
+    },
+  });
+  assert.equal(
+    (await g.suggest({ query: "Corrientes 1234", city: "CABA" })).predictions
+      .length,
+    1,
+  );
+  assert.equal(
+    (await g.search({ query: "Corrientes 1234", city: "CABA" })).candidates[0]
+      .precision,
+    "address",
+  );
+  assert.equal(
+    (await g.reverse({ lat: -34.6, lng: -58.38 })).candidates.length,
+    1,
+  );
+  assert.deepEqual(
+    calls.map((c) => c.pathname),
+    ["/v1/autocomplete", "/v1/search", "/v1/reverse"],
+  );
+  assert.equal(calls[0].searchParams.get("boundary.country"), "ARG");
+  assert.equal(calls[2].searchParams.get("point.lon"), "-58.38");
+  assert.doesNotMatch(JSON.stringify(g.providers()), /synthetic-key/);
+});
+
+test("MapTiler separates autocomplete and reverse, preserves approximate precision and rejects foreign results", async () => {
+  const calls: URL[] = [];
+  const g = createGeocoder({
+    georefUrl: false,
+    usigUrl: false,
+    maptilerKey: "synthetic-key",
+    minIntervalMs: 0,
+    fetch: async (url) => {
+      calls.push(url);
+      return response({
+        features: [
+          {
+            text: "Corrientes",
+            address: "1234",
+            place_name: "Corrientes 1234, CABA",
+            place_type: ["address"],
+            center: [-58.38, -34.6],
+            context: [
+              { id: "municipality.1", text: "CABA" },
+              { id: "region.1", text: "CABA" },
+              { id: "country.1", country_code: "ar" },
+            ],
+          },
+          {
+            text: "Foreign",
+            place_type: ["address"],
+            center: [-58.38, -34.6],
+            properties: { country_code: "cl" },
+          },
+        ],
+      });
+    },
+  });
+  assert.equal(
+    (await g.suggest({ query: "Corrientes 1234", city: "CABA" })).predictions
+      .length,
+    1,
+  );
+  assert.equal(
+    (await g.search({ query: "Corrientes 1234", city: "CABA" })).candidates[0]
+      .precision,
+    "interpolated",
+  );
+  assert.equal(
+    (await g.reverse({ lat: -34.6, lng: -58.38 })).candidates.length,
+    1,
+  );
+  assert.equal(calls[0].searchParams.get("autocomplete"), "true");
+  assert.equal(calls[1].searchParams.get("autocomplete"), "false");
+  assert.equal(calls[0].searchParams.get("country"), "ar");
+  assert.match(decodeURIComponent(calls[2].pathname), /-58.38,-34.6/);
+  assert.doesNotMatch(JSON.stringify(g.providers()), /synthetic-key/);
+});
+
+test("Turf comparison reports agreement and disagreement without averaging or claiming a verified door", () => {
+  const address = {
+    street: "Corrientes",
+    number: "1234",
+    city: "CABA",
+    province: "CABA",
+    lat: -34.6,
+    lng: -58.38,
+  };
+  const close = rank(
+    [
+      candidate("georef", address),
+      candidate("usig", { ...address, lng: -58.3799 }),
+    ],
+    normalizeInput({ query: "Corrientes 1234", city: "CABA" }),
+  );
+  assert.equal(close[0].supportingProviders?.length, 2);
+  assert.equal(close[0].lat, address.lat);
+  assert.equal(close[0].requiresConfirmation, true);
+  const far = rank(
+    [
+      candidate("georef", address),
+      candidate("usig", { ...address, lng: -58.4 }),
+    ],
+    normalizeInput({ query: "Corrientes 1234", city: "CABA" }),
+  );
+  assert.ok(
+    far.every(
+      (c) =>
+        c.warnings.includes("providers_disagree") && c.confidence === "low",
+    ),
+  );
+  const unrelated = rank(
+    [
+      candidate("georef", address),
+      candidate("usig", { ...address, number: "1250", lng: -58.4 }),
+    ],
+    normalizeInput({ query: "Corrientes 1234", city: "CABA" }),
+  );
+  assert.ok(unrelated.every((c) => !c.warnings.includes("providers_disagree")));
 });

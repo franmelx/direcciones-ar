@@ -1,6 +1,6 @@
 # Direcciones AR
 
-Buscador de direcciones argentinas, biblioteca Node.js y API HTTP con demo de mapa. Código gratuito bajo MIT, sin claves obligatorias y sin dependencias de ejecución. **No es una API alojada ilimitada ni garantiza ubicar cualquier puerta:** cobertura y precisión dependen de los datos disponibles. El alojamiento y proveedores adicionales pueden tener costos.
+Buscador de direcciones argentinas, biblioteca Node.js y API HTTP con demo de mapa. Código gratuito bajo MIT, sin claves obligatorias y usa Turf para contrastar distancias entre resultados. **No es una API alojada ilimitada ni garantiza ubicar cualquier puerta:** cobertura y precisión dependen de los datos disponibles. El alojamiento y proveedores adicionales pueden tener costos.
 
 ## Ejecutar
 
@@ -142,3 +142,14 @@ npm run --silent test:amba > amba.json
 Es una prueba **optativa con consultas reales**, no forma parte de `npm test`. Sortea alturas en 20 calles de distintas localidades del AMBA con semilla fija. La variante `test:amba:inventory` elige calles de un subconjunto del nomenclador oficial en 21 zonas, con semilla configurable mediante `AMBA_SEED`. Registra semilla, fuente, tiempos, fallos y advertencias sin usar clientes ni pedidos. Una altura sorteada puede no tener edificio; la muestra no es representativa y no demuestra precisión de puerta. El script limita la frecuencia. Los errores del inventario se informan aparte de las consultas sin coincidencia.
 
 Informe de la muestra ejecutada: [AMBA, 6 de septiembre de 2026](reports/amba-2026-09-06.md).
+
+
+## Comparación entre fuentes y proveedores adicionales
+
+La biblioteca utiliza `@turf/distance` para comparar la misma calle, altura, localidad y provincia entre proveedores. `supportingProviders` enumera fuentes situadas a 75 m o menos; `spreadMeters` informa su separación máxima. Si superan 250 m, se añade `providers_disagree` y se mantiene confianza baja. Es una heurística de discrepancia, no un radio de precisión: no promedia coordenadas ni declara una puerta verificada. Varias fuentes pueden compartir datos de origen.
+
+- `PELIAS_URL`: instancia propia o un proveedor autorizado de [Pelias](https://github.com/pelias/documentation/blob/master/autocomplete.md); `PELIAS_API_KEY` opcional. Autocompletado, búsqueda y reverse, restringidos a Argentina. La licencia abierta no incluye un servidor gratuito alojado.
+- `MAPTILER_API_KEY`: habilita [MapTiler Geocoding](https://docs.maptiler.com/cloud/api/geocoding/), con autocompletado y reverse. Necesita una clave del operador y está sujeto a su plan. La clave solo se envía desde el servidor.
+- Georef, USIG, Photon y Geoapify conservan sus configuraciones y límites. `/v1/providers` distingue proveedores compatibles de los habilitados. Los clientes deben mostrar la atribución del resultado elegido.
+
+La demo y Miconi ofrecen búsqueda, selección y corrección del punto. No equivalen al conjunto de datos ni a todas las prestaciones de Google Maps.

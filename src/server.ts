@@ -3,6 +3,9 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { createHandler } from "./http";
 const handler = createHandler({
+  peliasUrl: process.env.PELIAS_URL || undefined,
+  peliasKey: process.env.PELIAS_API_KEY || undefined,
+  maptilerKey: process.env.MAPTILER_API_KEY || undefined,
   geoapifyKey: process.env.GEOAPIFY_API_KEY || undefined,
   georefUrl: process.env.GEOREF_URL || undefined,
   usigUrl:

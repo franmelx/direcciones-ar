@@ -1,9 +1,12 @@
+import { distance } from "@turf/distance";
 import { createHash } from "node:crypto";
 import type {
   GeorefResponse,
   UsigResponse,
   PhotonResponse,
   GeoapifyResponse,
+  PeliasResponse,
+  MapTilerResponse,
 } from "./providers";
 import type {
   Options,
@@ -41,6 +44,14 @@ type Operation = "search" | "suggest" | "reverse";
 type ExecutionInput = NormalizedInput & Partial<Point>;
 
 export const ATTRIBUTIONS = {
+  pelias: {
+    name: "Pelias · fuentes de la instancia configurada",
+    url: "https://pelias.io/",
+  },
+  maptiler: {
+    name: "MapTiler · © OpenStreetMap contributors",
+    url: "https://www.maptiler.com/copyright/",
+  },
   georef: {
     name: "Georef · Datos Argentina",
     url: "https://www.argentina.gob.ar/georef",
@@ -322,6 +333,41 @@ export function rank(
       (r) => !r.warnings.includes("province_mismatch") || !r.address.province,
     )
     .sort((a, b) => b.score - a.score);
+  // Compare only the same complete address. Never average points or convert agreement into a verified door.
+  for (const r of ranked) {
+    if (!coordinates(r.lat, r.lng) || !r.address.number || !r.address.street)
+      continue;
+    const peers = ranked.filter(
+      (other) =>
+        coordinates(other.lat, other.lng) &&
+        other.provider !== r.provider &&
+        comparable(other.address.street) === comparable(r.address.street) &&
+        other.address.number === r.address.number &&
+        comparable(provinceName(other.address.city)) ===
+          comparable(provinceName(r.address.city)) &&
+        comparable(provinceName(other.address.province)) ===
+          comparable(provinceName(r.address.province)),
+    );
+    const measured = peers.map((other) => ({
+      other,
+      meters: distance([r.lng!, r.lat!], [other.lng!, other.lat!], {
+        units: "meters",
+      }),
+    }));
+    r.supportingProviders = [
+      ...new Set([
+        r.provider,
+        ...measured.filter((p) => p.meters <= 75).map((p) => p.other.provider),
+      ]),
+    ];
+    r.spreadMeters = Math.round(Math.max(0, ...measured.map((p) => p.meters)));
+    if (r.spreadMeters > 250) {
+      r.warnings.push("providers_disagree");
+      r.confidence = "low";
+    } else if (r.supportingProviders.length > 1 && !r.warnings.length)
+      r.score += 10;
+  }
+  ranked.sort((a, b) => b.score - a.score);
   const unique: Ranked[] = [];
   for (const r of ranked) {
     if (
@@ -373,6 +419,8 @@ export function createGeocoder(options: Options = {}): Geocoder {
       : options.usigUrl ||
         "https://servicios.usig.buenosaires.gob.ar/normalizar/";
   const geoapifyKey = options.geoapifyKey || null;
+  const peliasUrl = options.peliasUrl || null;
+  const maptilerKey = options.maptilerKey || null;
   const photonUrl = options.photonUrl || null; // Own installation or explicitly permitted provider.
   const publicPhoton =
     photonUrl && new URL(photonUrl).hostname === "photon.komoot.io";
@@ -380,7 +428,9 @@ export function createGeocoder(options: Options = {}): Geocoder {
     options.photonFallbackOnly ?? Boolean(publicPhoton);
   let photonDay = -1,
     photonCalls = 0;
-  for (const endpoint of [georefUrl, usigUrl, photonUrl].filter(present)) {
+  for (const endpoint of [georefUrl, usigUrl, photonUrl, peliasUrl].filter(
+    present,
+  )) {
     const url = new URL(endpoint);
     if (
       !["https:", "http:"].includes(url.protocol) ||
@@ -426,7 +476,7 @@ export function createGeocoder(options: Options = {}): Geocoder {
           Accept: "application/json",
           "User-Agent":
             options.userAgent ||
-            "direcciones-ar/0.3 (https://github.com/franmelx/direcciones-ar)",
+            "direcciones-ar/0.4 (https://github.com/franmelx/direcciones-ar)",
         },
         signal: AbortSignal.timeout(Math.max(1, deadline - Date.now())),
         redirect: "error",
@@ -654,6 +704,98 @@ export function createGeocoder(options: Options = {}): Geocoder {
         }),
       );
   }
+  async function pelias(kind: Operation, input: ExecutionInput) {
+    const reverse = kind === "reverse";
+    const data = await json<PeliasResponse>(
+      "pelias",
+      peliasUrl,
+      "/v1/" + (kind === "suggest" ? "autocomplete" : kind),
+      {
+        api_key: options.peliasKey,
+        size: 8,
+        "boundary.country": "ARG",
+        ...(reverse
+          ? { "point.lat": input.lat, "point.lon": input.lng }
+          : {
+              text: [input.query, input.city, input.province]
+                .filter(Boolean)
+                .join(", "),
+            }),
+      },
+    );
+    if (!Array.isArray(data.features))
+      throw new GeocodingError("provider_invalid", 503);
+    return data.features
+      .filter((f) => ["ar", "arg"].includes(fold(f.properties?.country_a)))
+      .map((f) => {
+        const p = f.properties;
+        return (kind === "suggest" ? prediction : candidate)("pelias", {
+          lat: f.geometry?.coordinates?.[1],
+          lng: f.geometry?.coordinates?.[0],
+          street: p.street,
+          number: p.housenumber,
+          city: p.locality || p.localadmin,
+          province: p.region,
+          postcode: p.postalcode,
+          label: p.label,
+          precision: p.housenumber
+            ? p.accuracy === "point"
+              ? "address"
+              : "interpolated"
+            : p.street
+              ? "street"
+              : "locality",
+        });
+      });
+  }
+  async function maptiler(kind: Operation, input: ExecutionInput) {
+    const query =
+      kind === "reverse"
+        ? `${input.lng},${input.lat}`
+        : [input.query, input.city, input.province].filter(Boolean).join(", ");
+    const data = await json<MapTilerResponse>(
+      "maptiler",
+      "https://api.maptiler.com",
+      "/geocoding/" + encodeURIComponent(query) + ".json",
+      {
+        key: maptilerKey,
+        country: "ar",
+        language: "es",
+        ...(kind === "reverse"
+          ? {}
+          : { limit: 8, autocomplete: String(kind === "suggest") }),
+      },
+    );
+    if (!Array.isArray(data.features))
+      throw new GeocodingError("provider_invalid", 503);
+    return data.features.map((f) => {
+      const context = (prefix: string) =>
+        f.context?.find((c) => c.id?.startsWith(prefix + "."));
+      const country =
+        f.properties?.country_code || context("country")?.country_code;
+      if (fold(country) !== "ar") return null;
+      const type = f.place_type?.[0];
+      return (kind === "suggest" ? prediction : candidate)("maptiler", {
+        lat: f.center?.[1] ?? f.geometry?.coordinates?.[1],
+        lng: f.center?.[0] ?? f.geometry?.coordinates?.[0],
+        street: type === "address" || type === "road" ? f.text : "",
+        number: f.address,
+        city:
+          context("municipality")?.text ||
+          context("locality")?.text ||
+          (type === "municipality" || type === "locality" ? f.text : ""),
+        province: context("region")?.text,
+        postcode: context("postal_code")?.text,
+        label: f.place_name,
+        precision:
+          type === "address" && f.address
+            ? "interpolated"
+            : type === "road"
+              ? "street"
+              : "locality",
+      });
+    });
+  }
   async function catalog(
     kind: "provinces" | "localities",
     input: { query: string; province: string },
@@ -801,6 +943,8 @@ export function createGeocoder(options: Options = {}): Geocoder {
             ),
         ]);
     }
+    if (peliasUrl) tasks.push(["pelias", () => pelias(kind, input)]);
+    if (maptilerKey) tasks.push(["maptiler", () => maptiler(kind, input)]);
     if (geoapifyKey) tasks.push(["geoapify", () => geoapify(kind, input)]);
     const settled = await Promise.allSettled(tasks.map(([, run]) => run()));
     // Public demo is an opt-in fallback for completed addresses and reverse lookups.
@@ -954,6 +1098,8 @@ export function createGeocoder(options: Options = {}): Geocoder {
       providers: (
         [
           ["georef", Boolean(georefUrl), "Argentina"],
+          ["pelias", Boolean(peliasUrl), "Según instancia configurada"],
+          ["maptiler", Boolean(maptilerKey), "Argentina"],
           ["usig", Boolean(usigUrl), "CABA y AMBA"],
           ["photon", Boolean(photonUrl), "Según instancia configurada"],
           ["geoapify", Boolean(geoapifyKey), "Argentina"],

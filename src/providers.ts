@@ -68,3 +68,38 @@ export interface GeoapifyResponse {
     result_type?: string;
   }[];
 }
+
+export interface PeliasResponse {
+  features?: {
+    geometry?: { coordinates?: unknown[] };
+    properties: {
+      country_a?: string;
+      street?: string;
+      housenumber?: string;
+      locality?: string;
+      localadmin?: string;
+      region?: string;
+      postalcode?: string;
+      label?: string;
+      layer?: string;
+      accuracy?: string;
+    };
+  }[];
+}
+interface MapTilerContext {
+  id?: string;
+  text?: string;
+  country_code?: string;
+}
+export interface MapTilerResponse {
+  features?: {
+    geometry?: { coordinates?: unknown[] };
+    center?: unknown[];
+    text?: string;
+    address?: string;
+    place_name?: string;
+    place_type?: string[];
+    properties?: { country_code?: string };
+    context?: MapTilerContext[];
+  }[];
+}

@@ -30,6 +30,8 @@ export interface Candidate {
   warnings: string[];
   attribution: { name: string; url: string };
   score: number;
+  supportingProviders?: string[];
+  spreadMeters?: number;
 }
 export interface Result {
   status: "ok" | "not_found" | "unavailable";
@@ -44,6 +46,9 @@ export interface Options {
   photonUrl?: string | false;
   photonFallbackOnly?: boolean;
   geoapifyKey?: string;
+  peliasUrl?: string | false;
+  peliasKey?: string;
+  maptilerKey?: string;
   timeoutMs?: number;
   minIntervalMs?: number;
   cacheSize?: number;
@@ -80,7 +85,13 @@ export interface CatalogResult {
   limit?: number;
 }
 
-export type Provider = "georef" | "usig" | "geoapify" | "photon";
+export type Provider =
+  | "georef"
+  | "usig"
+  | "geoapify"
+  | "photon"
+  | "pelias"
+  | "maptiler";
 export interface Point {
   lat: number;
   lng: number;

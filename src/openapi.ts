@@ -213,6 +213,8 @@ export const spec = {
           warnings: { type: "array", items: string },
           requiresConfirmation: { const: true },
           attribution: ref("Attribution"),
+          supportingProviders: { type: "array", items: string },
+          spreadMeters: { type: "number", minimum: 0, description: "Separación máxima entre fuentes para la misma dirección; no es un radio de precisión" },
           score: {
             type: "number",
             description: "Puntaje heurístico, no probabilidad",
